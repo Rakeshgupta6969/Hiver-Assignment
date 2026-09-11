@@ -1,0 +1,338 @@
+[
+  {
+    "id": "TW_ORD_001",
+    "brand": "AmazonHelp",
+    "intent": "ORDER_DELIVERY_ISSUE",
+    "customer_query": "@AmazonHelp My package was supposed to arrive yesterday by 8 PM, tracking says 'Out for Delivery' since 9 AM yesterday. Where is order #402-8921821-291?",
+    "brand_response": "We're sorry for the delay with your delivery! Please send us a DM with your order number and full delivery address so we can check the carrier status immediately: amzn.to/dm",
+    "metadata": {
+      "sentiment": "NEGATIVE",
+      "urgency": "MEDIUM",
+      "resolution_type": "DM_CARRIER_CHECK"
+    }
+  },
+  {
+    "id": "TW_ORD_002",
+    "brand": "AmazonHelp",
+    "intent": "ORDER_DELIVERY_ISSUE",
+    "customer_query": "@AmazonHelp the tracking shows 'Delivered' at my front porch 20 mins ago, but there is absolutely nothing here. Looked everywhere!",
+    "brand_response": "Oh no! Carriers occasionally scan packages early. Please check with neighbors or safe spots nearby. If it doesn't appear by tomorrow, DM us with your order ID and we'll replace or refund.",
+    "metadata": {
+      "sentiment": "NEGATIVE",
+      "urgency": "HIGH",
+      "resolution_type": "CHECK_SURROUNDINGS_THEN_DM"
+    }
+  },
+  {
+    "id": "TW_ORD_003",
+    "brand": "NikeSupport",
+    "intent": "ORDER_DELIVERY_ISSUE",
+    "customer_query": "@NikeSupport I accidentally entered my old apartment address on order NIK-99214. Can you update the shipping address before it leaves?",
+    "brand_response": "We move fast to ship orders, so address changes are only possible within 30 minutes of placing the order. Please DM us your order number and email ASAP so we can check if it can be intercepted!",
+    "metadata": {
+      "sentiment": "NEUTRAL",
+      "urgency": "HIGH",
+      "resolution_type": "DM_ORDER_INTERCEPT"
+    }
+  },
+  {
+    "id": "TW_ORD_004",
+    "brand": "AmazonHelp",
+    "intent": "ORDER_DELIVERY_ISSUE",
+    "customer_query": "@AmazonHelp What carrier is delivering order 112-9901? The tracking code doesn't work on USPS or UPS.",
+    "brand_response": "You can view the assigned carrier and real-time live map tracking directly in the Amazon app under 'Your Orders' > 'Track Package'. Feel free to DM us if you need further help!",
+    "metadata": {
+      "sentiment": "NEUTRAL",
+      "urgency": "LOW",
+      "resolution_type": "SELF_SERVE_LINK"
+    }
+  },
+  {
+    "id": "TW_ORD_005",
+    "brand": "UberEats",
+    "intent": "ORDER_DELIVERY_ISSUE",
+    "customer_query": "@Uber_Support Ordered dinner 1 hour ago and the driver has been parked at the same spot for 30 minutes! Food is going to be freezing cold.",
+    "brand_response": "We want your meal hot and fresh! Please send us a DM with the phone number linked to your Uber Eats account so our team can contact the courier or issue an immediate reorder.",
+    "metadata": {
+      "sentiment": "NEGATIVE",
+      "urgency": "HIGH",
+      "resolution_type": "DM_COURIER_INTERVENTION"
+    }
+  },
+  {
+    "id": "TW_BIL_001",
+    "brand": "AmazonHelp",
+    "intent": "BILLING_REFUND_INQUIRY",
+    "customer_query": "@AmazonHelp I was charged $14.99 twice for Prime membership this morning on my card! Please reverse the duplicate charge.",
+    "brand_response": "Duplicate charges are definitely frustrating! Please DM us your account email address and the last 4 digits of the card charged so our billing specialists can verify and issue your refund: amzn.to/dm",
+    "metadata": {
+      "sentiment": "NEGATIVE",
+      "urgency": "HIGH",
+      "resolution_type": "DM_BILLING_VERIFICATION"
+    }
+  },
+  {
+    "id": "TW_BIL_002",
+    "brand": "SpotifyCares",
+    "intent": "BILLING_REFUND_INQUIRY",
+    "customer_query": "@SpotifyCares I cancelled my Premium subscription last week but I just got billed $11.99 today. Why did you charge me?",
+    "brand_response": "Hey there! We can certainly take a look at your billing history. Send us a quick DM with your account email address and we'll check the cancellation status and help sort out a refund.",
+    "metadata": {
+      "sentiment": "NEGATIVE",
+      "urgency": "MEDIUM",
+      "resolution_type": "DM_SUBSCRIPTION_AUDIT"
+    }
+  },
+  {
+    "id": "TW_BIL_003",
+    "brand": "Delta",
+    "intent": "BILLING_REFUND_INQUIRY",
+    "customer_query": "@Delta How long does it usually take for a cancelled flight refund to reflect back in my original payment method?",
+    "brand_response": "Refunds to the original form of payment typically process within 7-10 business days depending on your financial institution. You can track your refund request status at delta.com/refundstatus.",
+    "metadata": {
+      "sentiment": "NEUTRAL",
+      "urgency": "LOW",
+      "resolution_type": "SELF_SERVE_POLICY"
+    }
+  },
+  {
+    "id": "TW_BIL_004",
+    "brand": "AmazonHelp",
+    "intent": "BILLING_REFUND_INQUIRY",
+    "customer_query": "@AmazonHelp Can you email me the VAT invoice for my purchase last month? I need it for business expense filing.",
+    "brand_response": "You can easily download VAT invoices anytime! Go to 'Your Orders', find the order, and click 'Invoice' > 'VAT Invoice' to download as a PDF: amzn.to/invoice",
+    "metadata": {
+      "sentiment": "NEUTRAL",
+      "urgency": "LOW",
+      "resolution_type": "SELF_SERVE_INVOICE_GUIDE"
+    }
+  },
+  {
+    "id": "TW_BIL_005",
+    "brand": "Uber_Support",
+    "intent": "BILLING_REFUND_INQUIRY",
+    "customer_query": "@Uber_Support The driver took a massive detour and my fare was $65 instead of the $32 upfront quote. I want an adjustment.",
+    "brand_response": "Fares shouldn't spike due to unnecessary route deviations. Please head to 'Activity' in your Uber app, select the ride, tap 'Help' > 'Review my fare', or DM us the trip date and phone number.",
+    "metadata": {
+      "sentiment": "NEGATIVE",
+      "urgency": "MEDIUM",
+      "resolution_type": "APP_FARE_REVIEW_OR_DM"
+    }
+  },
+  {
+    "id": "TW_TEC_001",
+    "brand": "AppleSupport",
+    "intent": "TECHNICAL_PRODUCT_SUPPORT",
+    "customer_query": "@AppleSupport My iPhone 15 keeps crashing to the black Apple logo screen every time I open the Camera app on iOS 18.0.1. Already restarted twice.",
+    "brand_response": "We'd like to help get your Camera app running smoothly. Please try force closing all apps, then reset all settings (Settings > General > Transfer or Reset iPhone > Reset > Reset All Settings). DM us if the issue persists!",
+    "metadata": {
+      "sentiment": "NEGATIVE",
+      "urgency": "HIGH",
+      "resolution_type": "TECHNICAL_TROUBLESHOOTING"
+    }
+  },
+  {
+    "id": "TW_TEC_002",
+    "brand": "SpotifyCares",
+    "intent": "TECHNICAL_PRODUCT_SUPPORT",
+    "customer_query": "@SpotifyCares Songs keep pausing randomly every 15-20 seconds on desktop app Mac. Reinstalled and it still happens.",
+    "brand_response": "Thanks for flagging. Please try performing a clean reinstall using these steps: spoti.fi/clean-reinstall to clear corrupted cache files. If that doesn't fix it, DM us your Mac OS and Spotify version!",
+    "metadata": {
+      "sentiment": "NEGATIVE",
+      "urgency": "MEDIUM",
+      "resolution_type": "CACHE_CLEAN_REINSTALL"
+    }
+  },
+  {
+    "id": "TW_TEC_003",
+    "brand": "AppleSupport",
+    "intent": "TECHNICAL_PRODUCT_SUPPORT",
+    "customer_query": "@AppleSupport Does AirPods Pro 2 spatial audio work with Apple TV 4K on tvOS 18?",
+    "brand_response": "Yes! AirPods Pro 2 support Spatial Audio with dynamic head tracking on Apple TV 4K. Make sure your Apple TV is updated to the latest tvOS and AirPods firmware is up to date: apple.co/spatial-tv",
+    "metadata": {
+      "sentiment": "POSITIVE",
+      "urgency": "LOW",
+      "resolution_type": "FEATURE_COMPATIBILITY_CONFIRMATION"
+    }
+  },
+  {
+    "id": "TW_TEC_004",
+    "brand": "AmazonHelp",
+    "intent": "TECHNICAL_PRODUCT_SUPPORT",
+    "customer_query": "@AmazonHelp Getting 'Error Code 500: Server Error' whenever I click Checkout on your website from Chrome browser.",
+    "brand_response": "Sorry for the trouble at checkout! Please clear your browser cache/cookies, disable any adblock extensions, or try an Incognito window. DM us if you're still unable to complete the order: amzn.to/dm",
+    "metadata": {
+      "sentiment": "NEGATIVE",
+      "urgency": "MEDIUM",
+      "resolution_type": "BROWSER_TROUBLESHOOTING"
+    }
+  },
+  {
+    "id": "TW_TEC_005",
+    "brand": "Uber_Support",
+    "intent": "TECHNICAL_PRODUCT_SUPPORT",
+    "customer_query": "@Uber_Support The Uber app is stuck on a white blank screen on startup on Android 14. Clearing app storage did not help.",
+    "brand_response": "Sorry for the inconvenience! Please ensure Google Play Services is updated to the latest version, then reinstall the app. If the screen remains blank, please DM us your device model so we can log a bug report.",
+    "metadata": {
+      "sentiment": "NEGATIVE",
+      "urgency": "HIGH",
+      "resolution_type": "OS_APP_DEBUGGING"
+    }
+  },
+  {
+    "id": "TW_SEC_001",
+    "brand": "AppleSupport",
+    "intent": "ACCOUNT_SECURITY_ACCESS",
+    "customer_query": "@AppleSupport My Apple ID was locked for security reasons and I no longer have access to my old trusted phone number. How do I get into my account?",
+    "brand_response": "Account security is our top priority. When trusted numbers change, you can start Account Recovery at iforgot.apple.com to verify your identity. Please DM us if you have questions about the recovery countdown.",
+    "metadata": {
+      "sentiment": "NEGATIVE",
+      "urgency": "CRITICAL",
+      "resolution_type": "ACCOUNT_RECOVERY_PORTAL"
+    }
+  },
+  {
+    "id": "TW_SEC_002",
+    "brand": "AmazonHelp",
+    "intent": "ACCOUNT_SECURITY_ACCESS",
+    "customer_query": "@AmazonHelp I think someone hacked my Amazon account! I received an email about an order placed for $800 to an address in another state. HELP!",
+    "brand_response": "We take unauthorized access very seriously! Please immediately change your password, enable 2-step verification, and DM us your account email so our Fraud and Account Security team can lock the unauthorized order immediately.",
+    "metadata": {
+      "sentiment": "SEVERELY_DISSATISFIED",
+      "urgency": "CRITICAL",
+      "resolution_type": "FRAUD_SECURITY_ESCALATION"
+    }
+  },
+  {
+    "id": "TW_SEC_003",
+    "brand": "SpotifyCares",
+    "intent": "ACCOUNT_SECURITY_ACCESS",
+    "customer_query": "@SpotifyCares I requested a password reset email 4 times and nothing is arriving in my inbox or spam folder.",
+    "brand_response": "Let's help you get back in! Ensure no email filters are blocking @spotify.com. If you still don't receive it, send us a DM with your username and registered email so we can verify and send a direct reset link.",
+    "metadata": {
+      "sentiment": "NEGATIVE",
+      "urgency": "HIGH",
+      "resolution_type": "DM_RESET_VERIFICATION"
+    }
+  },
+  {
+    "id": "TW_SEC_004",
+    "brand": "Uber_Support",
+    "intent": "ACCOUNT_SECURITY_ACCESS",
+    "customer_query": "@Uber_Support I'm receiving SMS verification codes that I never requested. Is someone trying to break into my Uber account?",
+    "brand_response": "Never share verification codes with anyone. If you suspect an unauthorized attempt, please log in and change your password immediately, then review active devices. DM us your phone number if you need our security team to investigate.",
+    "metadata": {
+      "sentiment": "NEGATIVE",
+      "urgency": "HIGH",
+      "resolution_type": "SECURITY_WARNING_AND_INVESTIGATION"
+    }
+  },
+  {
+    "id": "TW_FAQ_001",
+    "brand": "NikeSupport",
+    "intent": "POLICY_GENERAL_FAQ",
+    "customer_query": "@NikeSupport What is your holiday return policy for shoes purchased in November? Can they be returned in January?",
+    "brand_response": "Yes! Nike members enjoy a 60-day return policy for any purchase, even worn shoes. For the holiday season, purchases made between Nov 1 and Dec 31 have an extended return window through Jan 31. More details: nike.com/returns",
+    "metadata": {
+      "sentiment": "NEUTRAL",
+      "urgency": "LOW",
+      "resolution_type": "POLICY_EXPLANATION"
+    }
+  },
+  {
+    "id": "TW_FAQ_002",
+    "brand": "Delta",
+    "intent": "POLICY_GENERAL_FAQ",
+    "customer_query": "@Delta What is the maximum carry-on bag dimension for domestic flights within the US?",
+    "brand_response": "Delta carry-on bags cannot exceed 22 x 14 x 9 inches (56 x 35 x 23 cm) including handles and wheels. Individual length, width, and height cannot exceed 45 linear inches: delta.com/carryon",
+    "metadata": {
+      "sentiment": "NEUTRAL",
+      "urgency": "LOW",
+      "resolution_type": "FACTUAL_DIMENSIONS"
+    }
+  },
+  {
+    "id": "TW_FAQ_003",
+    "brand": "AppleSupport",
+    "intent": "POLICY_GENERAL_FAQ",
+    "customer_query": "@AppleSupport Can AppleCare+ be transferred to a new owner if I sell my MacBook Pro to a friend?",
+    "brand_response": "Yes, AppleCare+ coverage can be transferred to the new owner! You can submit the transfer request online with proof of purchase and agreement number: apple.co/transfer-applecare",
+    "metadata": {
+      "sentiment": "NEUTRAL",
+      "urgency": "LOW",
+      "resolution_type": "POLICY_TRANSFER_LINK"
+    }
+  },
+  {
+    "id": "TW_FAQ_004",
+    "brand": "AmazonHelp",
+    "intent": "POLICY_GENERAL_FAQ",
+    "customer_query": "@AmazonHelp Do you ship internationally to Germany for electronics, and are import duties calculated at checkout?",
+    "brand_response": "Yes, Amazon Global ships eligible items to Germany! Estimated import fees and customs duties are calculated and collected directly at checkout so there are no surprise fees on delivery: amzn.to/global",
+    "metadata": {
+      "sentiment": "POSITIVE",
+      "urgency": "LOW",
+      "resolution_type": "SHIPPING_POLICY"
+    }
+  },
+  {
+    "id": "TW_FAQ_005",
+    "brand": "HiverSupport",
+    "intent": "POLICY_GENERAL_FAQ",
+    "customer_query": "@HiverSupport Does Hiver offer shared mailbox analytics and SLA tracking for Gmail workspaces?",
+    "brand_response": "Yes! Hiver provides comprehensive shared mailbox analytics, SLA management, and workload distribution right inside your Gmail inbox. Check out our features guide: hiverhq.com/analytics",
+    "metadata": {
+      "sentiment": "NEUTRAL",
+      "urgency": "LOW",
+      "resolution_type": "PRODUCT_FEATURE_EXPLANATION"
+    }
+  },
+  {
+    "id": "TW_ESC_001",
+    "brand": "British_Airways",
+    "intent": "COMPLAINT_FEEDBACK_ESCALATION",
+    "customer_query": "@British_Airways You lost our luggage 6 days ago with life-saving medication inside! Agents at Heathrow are completely ignoring us. This is criminal neglect. We are contacting our attorney!",
+    "brand_response": "We are deeply concerned to hear this and treat medical baggage emergencies with highest priority. Please DM us your baggage tag number, booking reference, and direct contact number immediately so our Senior Duty Manager can call you.",
+    "metadata": {
+      "sentiment": "SEVERELY_DISSATISFIED",
+      "urgency": "CRITICAL",
+      "resolution_type": "EXECUTIVE_ESCALATION"
+    }
+  },
+  {
+    "id": "TW_ESC_002",
+    "brand": "Uber_Support",
+    "intent": "COMPLAINT_FEEDBACK_ESCALATION",
+    "customer_query": "@Uber_Support Your driver verbally harassed my daughter and refused to let her out at the curb until she threatened to scream. Unacceptable safety violation!",
+    "brand_response": "This behavior is completely intolerable and violates our Community Guidelines. Please DM us the phone number and trip details right away so our Dedicated Safety Incident Team can take immediate action and contact you.",
+    "metadata": {
+      "sentiment": "SEVERELY_DISSATISFIED",
+      "urgency": "CRITICAL",
+      "resolution_type": "SAFETY_INCIDENT_ESCALATION"
+    }
+  },
+  {
+    "id": "TW_ESC_003",
+    "brand": "AmazonHelp",
+    "intent": "COMPLAINT_FEEDBACK_ESCALATION",
+    "customer_query": "@AmazonHelp 4 times customer service told me my refund was processed, and 4 times it bounced! Stop lying to paying customers! I am closing my Prime account and filing a FTC complaint.",
+    "brand_response": "We sincerely apologize for this distressing experience and the conflicting information you received. Please DM us your account email so a senior supervisor from our Executive Escalations team can personally review this and ensure resolution.",
+    "metadata": {
+      "sentiment": "SEVERELY_DISSATISFIED",
+      "urgency": "HIGH",
+      "resolution_type": "EXECUTIVE_SUPERVISOR_ROUTING"
+    }
+  },
+  {
+    "id": "TW_ESC_004",
+    "brand": "Delta",
+    "intent": "COMPLAINT_FEEDBACK_ESCALATION",
+    "customer_query": "@Delta Sitting on the tarmac for 5 hours without air conditioning or water. Passengers are passing out! The captain refuses to answer. This is inhumane!",
+    "brand_response": "We are urgently escalating this situation to our Operations Control Center. Please DM your flight number and seat number immediately so our tarmac coordination team can assist on the ground.",
+    "metadata": {
+      "sentiment": "SEVERELY_DISSATISFIED",
+      "urgency": "CRITICAL",
+      "resolution_type": "FLIGHT_OPS_EMERGENCY"
+    }
+  }
+]

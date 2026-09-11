@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hiver AI Customer Support Agent | Twitter Triage & Resolution</title>
+  <meta name="description" content="Production-ready AI Customer Support Agent for Twitter: Intent Classification, Grounded Response Generation, and Automation Decision Triage.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="app-background">
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+  </div>
+
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>Hiver <span class="accent-text">AI Support Agent</span></h1>
+          <span class="badge badge-subtle">Twitter Intelligence Pipeline</span>
+        </div>
+      </div>
+
+      <div class="nav-metrics">
+        <div class="metric-pill" id="status-pill">
+          <span class="status-dot"></span>
+          <span id="system-status">System Ready</span>
+        </div>
+        <div class="metric-pill">
+          <span class="metric-label">Indexed Grounding Pairs:</span>
+          <span class="metric-val" id="total-exemplars">23</span>
+        </div>
+        <a href="/docs" target="_blank" class="nav-link-btn" title="OpenAPI Swagger Documentation">API Docs</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <!-- Top Hero Section -->
+    <section class="hero-section">
+      <h2>Autonomous Customer Support <span class="gradient-text">with Human-in-the-Loop Safety</span></h2>
+      <p class="hero-subtitle">
+        Triaging inbound Twitter conversations through intent classification, grounded RAG response generation, and an automated escalation gatekeeper.
+      </p>
+
+      <!-- Preset selector chips -->
+      <div class="presets-wrapper">
+        <span class="presets-label">⚡ Test Scenarios:</span>
+        <div class="presets-chips" id="preset-container">
+          <button class="chip" data-scenario="delayed_package">📦 Delayed Order</button>
+          <button class="chip" data-scenario="billing_charge">💳 Duplicate Charge</button>
+          <button class="chip" data-scenario="app_crash">📱 App Crash (iOS 18)</button>
+          <button class="chip" data-scenario="account_hacked">🚨 Account Compromised</button>
+          <button class="chip" data-scenario="return_faq">📋 Return Policy FAQ</button>
+          <button class="chip" data-scenario="legal_escalation">⚖️ Legal / Churn Threat</button>
+          <button class="chip" data-scenario="accidental_pii">🔒 Public PII Leak</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Input Section -->
+    <section class="input-card glass-panel">
+      <div class="input-header">
+        <div class="input-title-group">
+          <span class="twitter-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+          </span>
+          <label for="tweet-input">Customer Inbound Tweet</label>
+        </div>
+        <div class="input-meta">
+          <label for="brand-select">Brand Context:</label>
+          <select id="brand-select" class="brand-dropdown">
+            <option value="AmazonHelp">AmazonHelp</option>
+            <option value="AppleSupport">AppleSupport</option>
+            <option value="Uber_Support">Uber_Support</option>
+            <option value="Delta">Delta</option>
+            <option value="SpotifyCares">SpotifyCares</option>
+            <option value="NikeSupport">NikeSupport</option>
+            <option value="HiverSupport">HiverSupport</option>
+          </select>
+          <span class="char-count" id="input-char-count">0 / 280</span>
+        </div>
+      </div>
+
+      <div class="input-body">
+        <textarea id="tweet-input" placeholder="Type or paste a customer support tweet (e.g. @AmazonHelp where is my package #402-8921821? It's 2 days late!)..."></textarea>
+      </div>
+
+      <div class="input-footer">
+        <div class="footer-tips">
+          <span>💡 Tip: Try edge-cases with extreme sentiment, PII leaks, or ambiguous queries to inspect the escalation gate.</span>
+        </div>
+        <button id="process-btn" class="btn-primary">
+          <span class="btn-text">Execute AI Pipeline</span>
+          <span class="btn-spinner" id="btn-spinner" style="display:none;"></span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Pipeline Visualizer -->
+    <section class="results-container" id="results-section" style="display:none;">
+      <div class="results-banner">
+        <div class="banner-left">
+          <span class="pipeline-pulse"></span>
+          <h3>Pipeline Execution Trace</h3>
+        </div>
+        <div class="banner-right">
+          <span class="latency-badge" id="execution-time">⏱️ 0 ms</span>
+        </div>
+      </div>
+
+      <div class="results-grid">
+        <!-- Task 1: Intent Classification Card -->
+        <div class="result-card glass-panel" id="card-intent">
+          <div class="card-header">
+            <div class="header-icon icon-intent">🎯</div>
+            <div class="header-text">
+              <h4>Task 1: Intent Classification</h4>
+              <p>Issue category, sentiment, & urgency</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="intent-main-display">
+              <span class="intent-tag" id="res-primary-intent">ORDER_DELIVERY_ISSUE</span>
+              <span class="confidence-badge" id="res-intent-confidence">96% Conf.</span>
+            </div>
+
+            <div class="meta-row">
+              <div class="meta-pill">
+                <span class="meta-pill-label">Sentiment:</span>
+                <span class="sentiment-indicator" id="res-sentiment">NEGATIVE</span>
+              </div>
+              <div class="meta-pill">
+                <span class="meta-pill-label">Urgency:</span>
+                <span class="urgency-indicator" id="res-urgency">HIGH</span>
+              </div>
+            </div>
+
+            <div class="reasoning-box">
+              <span class="box-label">Classification Rationale:</span>
+              <p id="res-intent-reasoning">Detected delivery and package keywords with negative sentiment cues.</p>
+            </div>
+
+            <div class="entities-box" id="entities-container" style="display:none;">
+              <span class="box-label">Extracted Entities:</span>
+              <div class="entity-tags" id="res-entities"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Task 2: Grounded Response Generation Card -->
+        <div class="result-card glass-panel" id="card-response">
+          <div class="card-header">
+            <div class="header-icon icon-response">💬</div>
+            <div class="header-text">
+              <h4>Task 2: Grounded Response Generation</h4>
+              <p>Reply grounded in historical brand exemplars</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <!-- Twitter Mock Tweet Box -->
+            <div class="tweet-preview-card">
+              <div class="tweet-author-row">
+                <div class="author-avatar" id="res-brand-avatar">H</div>
+                <div class="author-info">
+                  <span class="author-name" id="res-brand-name">Support Team</span>
+                  <span class="author-handle" id="res-brand-handle">@Support</span>
+                  <span class="verified-badge">✓</span>
+                </div>
+              </div>
+              <p class="tweet-reply-text" id="res-reply-text">Generating grounded response...</p>
+              <div class="tweet-stats-row">
+                <span class="badge" id="res-reply-length">145 chars</span>
+                <span class="badge badge-accent" id="res-reply-dm">DM Channel Suggested</span>
+                <span class="badge badge-subtle" id="res-reply-tone">Empathetic</span>
+              </div>
+            </div>
+
+            <!-- Grounding Precedent Accordion -->
+            <div class="grounding-section">
+              <div class="grounding-header" id="toggle-exemplars">
+                <span>📚 Grounding Precedent (<span id="exemplar-count">3</span> historical brand replies)</span>
+                <span class="toggle-icon">▼</span>
+              </div>
+              <div class="exemplars-list" id="exemplars-list">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Task 3: Automation Decision Card -->
+        <div class="result-card glass-panel" id="card-automation">
+          <div class="card-header">
+            <div class="header-icon icon-decision">⚖️</div>
+            <div class="header-text">
+              <h4>Task 3: Automation Decision</h4>
+              <p>Self-serve auto-response vs human escalation</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="decision-hero" id="decision-hero">
+              <div class="decision-badge" id="res-decision-badge">AUTOMATE</div>
+              <div class="decision-conf" id="res-decision-confidence">95% Safety Score</div>
+            </div>
+
+            <div class="routing-row">
+              <span class="routing-label">Assigned Route:</span>
+              <span class="routing-value" id="res-routing-team">Tier 1 Automated Fast-Path</span>
+            </div>
+
+            <div class="reasoning-box decision-reasoning">
+              <span class="box-label">Decision Rationale:</span>
+              <p id="res-decision-reasoning">Safe for automation. Intent confidence and historical grounding meet threshold with no security or churn flags.</p>
+            </div>
+
+            <div class="risk-factors-box" id="risk-factors-container" style="display:none;">
+              <span class="box-label">⚠️ Detected Risk Flags:</span>
+              <ul id="res-risk-factors"></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Taxonomy Showcase Section -->
+    <section class="taxonomy-section glass-panel">
+      <div class="taxonomy-header">
+        <h3>📋 Standardized Support Intent Taxonomy</h3>
+        <p>Curated 6-intent MECE taxonomy specifically designed for Twitter customer service triage</p>
+      </div>
+      <div class="taxonomy-grid">
+        <div class="taxonomy-item">
+          <span class="item-tag tag-order">ORDER_DELIVERY_ISSUE</span>
+          <p>Shipment delays, tracking status, missing parcels, transit damage, address changes.</p>
+        </div>
+        <div class="taxonomy-item">
+          <span class="item-tag tag-billing">BILLING_REFUND_INQUIRY</span>
+          <p>Duplicate charges, unexpected fees, invoice requests, refund timelines, payment errors.</p>
+        </div>
+        <div class="taxonomy-item">
+          <span class="item-tag tag-tech">TECHNICAL_PRODUCT_SUPPORT</span>
+          <p>App crashes, website checkout errors, OS compatibility, login bugs, audio/video streaming.</p>
+        </div>
+        <div class="taxonomy-item">
+          <span class="item-tag tag-security">ACCOUNT_SECURITY_ACCESS</span>
+          <p>Account lockouts, 2FA/MFA failures, password resets, suspicious logins, fraud attempts.</p>
+        </div>
+        <div class="taxonomy-item">
+          <span class="item-tag tag-faq">POLICY_GENERAL_FAQ</span>
+          <p>Return windows, warranty terms, baggage policies, business hours, international shipping.</p>
+        </div>
+        <div class="taxonomy-item">
+          <span class="item-tag tag-complaint">COMPLAINT_FEEDBACK_ESCALATION</span>
+          <p>Severe dissatisfaction, rude staff, legal/regulatory threats, churn threats, executive escalations.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Built for the <strong>Hiver SDE Intern Take-Home Assignment</strong> • Complete AI Support Agent Architecture</p>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

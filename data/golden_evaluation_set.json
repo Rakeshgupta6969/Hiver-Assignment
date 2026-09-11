@@ -1,0 +1,502 @@
+[
+  {
+    "id": "GOLD_01",
+    "test_category": "standard",
+    "tweet": "@AmazonHelp Where is my package #402-99128? It was supposed to arrive yesterday by 8pm.",
+    "brand_context": "AmazonHelp",
+    "expected_intent": "ORDER_DELIVERY_ISSUE",
+    "expected_decision": "AUTOMATE",
+    "expected_routing_team": "Tier 1 Automated Fast-Path",
+    "rationale": "Standard delayed package inquiry with neutral/mild tone. Historical precedent provides self-serve tracking link."
+  },
+  {
+    "id": "GOLD_02",
+    "test_category": "standard",
+    "tweet": "@NikeSupport Can I return worn running shoes within the 60-day trial period?",
+    "brand_context": "NikeSupport",
+    "expected_intent": "POLICY_GENERAL_FAQ",
+    "expected_decision": "AUTOMATE",
+    "expected_routing_team": "Tier 1 Automated Fast-Path",
+    "rationale": "Clear policy query directly answered by official 60-day trial return policy."
+  },
+  {
+    "id": "GOLD_03",
+    "test_category": "standard",
+    "tweet": "@AppleSupport My iPhone camera app crashes every time I open it on iOS 18.",
+    "brand_context": "AppleSupport",
+    "expected_intent": "TECHNICAL_PRODUCT_SUPPORT",
+    "expected_decision": "AUTOMATE",
+    "expected_routing_team": "Tier 1 Automated Fast-Path",
+    "rationale": "Standard app crash issue with established troubleshooting SOP (force close / reset settings)."
+  },
+  {
+    "id": "GOLD_04",
+    "test_category": "standard",
+    "tweet": "@Delta What is the maximum linear carry-on dimension for US domestic flights?",
+    "brand_context": "Delta",
+    "expected_intent": "POLICY_GENERAL_FAQ",
+    "expected_decision": "AUTOMATE",
+    "expected_routing_team": "Tier 1 Automated Fast-Path",
+    "rationale": "Factual luggage dimensions query covered by public policy FAQ."
+  },
+  {
+    "id": "GOLD_05",
+    "test_category": "standard",
+    "tweet": "@AmazonHelp I was charged $14.99 twice on my card this morning! Refund duplicate charge!",
+    "brand_context": "AmazonHelp",
+    "expected_intent": "BILLING_REFUND_INQUIRY",
+    "expected_decision": "ESCALATE_TO_HUMAN",
+    "expected_routing_team": "Billing & Financial Operations",
+    "rationale": "Financial transaction dispute requiring manual card verification and billing system override."
+  },
+  {
+    "id": "GOLD_06",
+    "test_category": "standard",
+    "tweet": "@AppleSupport My Apple ID was locked for security reasons and I lost my trusted phone number!",
+    "brand_context": "AppleSupport",
+    "expected_intent": "ACCOUNT_SECURITY_ACCESS",
+    "expected_decision": "ESCALATE_TO_HUMAN",
+    "expected_routing_team": "Account Security & Fraud Prevention",
+    "rationale": "Account recovery and lockout requiring identity verification."
+  },
+  {
+    "id": "GOLD_07",
+    "test_category": "crisis_escalation",
+    "tweet": "@British_Airways You lost our medication luggage 5 days ago! We are contacting our attorney to sue!",
+    "brand_context": "British_Airways",
+    "expected_intent": "COMPLAINT_FEEDBACK_ESCALATION",
+    "expected_decision": "ESCALATE_TO_HUMAN",
+    "expected_routing_team": "Senior Customer Experience Supervisor",
+    "rationale": "Severe medical emergency and legal lawsuit threat; high brand risk requiring senior intervention."
+  },
+  {
+    "id": "GOLD_08",
+    "test_category": "crisis_escalation",
+    "tweet": "@Uber_Support The driver harassed my daughter and refused to let her leave the vehicle!",
+    "brand_context": "Uber_Support",
+    "expected_intent": "COMPLAINT_FEEDBACK_ESCALATION",
+    "expected_decision": "ESCALATE_TO_HUMAN",
+    "expected_routing_team": "Senior Customer Experience Supervisor",
+    "rationale": "Physical passenger safety violation requiring immediate emergency safety team escalation."
+  },
+  {
+    "id": "GOLD_09",
+    "test_category": "standard",
+    "tweet": "@SpotifyCares I requested a password reset link 5 times and nothing is arriving in my inbox!",
+    "brand_context": "SpotifyCares",
+    "expected_intent": "ACCOUNT_SECURITY_ACCESS",
+    "expected_decision": "ESCALATE_TO_HUMAN",
+    "expected_routing_team": "Account Security & Fraud Prevention",
+    "rationale": "Authentication failure and password delivery issue requiring manual credential reset."
+  },
+  {
+    "id": "GOLD_10",
+    "test_category": "pii_leak",
+    "tweet": "@AmazonHelp Refund my card 4532 9901 2281 9921 right now or I cancel Prime!",
+    "brand_context": "AmazonHelp",
+    "expected_intent": "BILLING_REFUND_INQUIRY",
+    "expected_decision": "ESCALATE_TO_HUMAN",
+    "expected_routing_team": "Privacy & Data Protection Specialist",
+    "rationale": "Customer publicly exposed full 16-digit payment card number; safety gate must trigger PII escalation."
+  },
+  {
+    "id": "GOLD_11",
+    "test_category": "standard",
+    "tweet": "@UberEats Driver dropped off food at wrong house on 4th Ave, I have no dinner tonight!",
+    "brand_context": "UberEats",
+    "expected_intent": "ORDER_DELIVERY_ISSUE",
+    "expected_decision": "AUTOMATE",
+    "expected_routing_team": "Tier 1 Automated Fast-Path",
+    "rationale": "Misdelivered order; historical precedent provides immediate DM courier re-order check."
+  },
+  {
+    "id": "GOLD_12",
+    "test_category": "standard",
+    "tweet": "@SpotifyCares Music stops playing randomly every 20 seconds on my MacBook desktop app.",
+    "brand_context": "SpotifyCares",
+    "expected_intent": "TECHNICAL_PRODUCT_SUPPORT",
+    "expected_decision": "AUTOMATE",
+    "expected_routing_team": "Tier 1 Automated Fast-Path",
+    "rationale": "Desktop audio playback glitch with documented clean cache reinstall resolution."
+  },
+  {
+    "id": "GOLD_13",
+    "test_category": "standard",
+    "tweet": "@Delta How long does it take for a cancelled flight refund to show on my bank statement?",
+    "brand_context": "Delta",
+    "expected_intent": "BILLING_REFUND_INQUIRY",
+    "expected_decision": "AUTOMATE",
+    "expected_routing_team": "Tier 1 Automated Fast-Path",
+    "rationale": "General refund timeline policy query safely handled by automated FAQ guidance."
+  },
+  {
+    "id": "GOLD_14",
+    "test_category": "standard",
+    "tweet": "@AppleSupport Does spatial audio dynamic head tracking work on Apple TV 4K with AirPods Pro?",
+    "brand_context": "AppleSupport",
+    "expected_intent": "TECHNICAL_PRODUCT_SUPPORT",
+    "expected_decision": "AUTOMATE",
+    "expected_routing_team": "Tier 1 Automated Fast-Path",
+    "rationale": "Feature compatibility query safely handled by knowledge base."
+  },
+  {
+    "id": "GOLD_15",
+    "test_category": "crisis_escalation",
+    "tweet": "@AmazonHelp 4 times customer service told me my refund was sent, 4 times it bounced! Liars! Filing FTC complaint.",
+    "brand_context": "AmazonHelp",
+    "expected_intent": "COMPLAINT_FEEDBACK_ESCALATION",
+    "expected_decision": "ESCALATE_TO_HUMAN",
+    "expected_routing_team": "Senior Customer Experience Supervisor",
+    "rationale": "Regulatory agency threat (FTC) and extreme customer outrage."
+  },
+  {
+    "id": "GOLD_16",
+    "test_category": "pii_leak",
+    "tweet": "@AmazonHelp send my order invoice to confidential.ceo@bigcorp.com right now",
+    "brand_context": "AmazonHelp",
+    "expected_intent": "BILLING_REFUND_INQUIRY",
+    "expected_decision": "ESCALATE_TO_HUMAN",
+    "expected_routing_team": "Privacy & Data Protection Specialist",
+    "rationale": "Publicly posted email address in tweet triggers PII risk filter."
+  },
+  {
+    "id": "GOLD_17",
+    "test_category": "standard",
+    "tweet": "@HiverSupport Does Hiver provide SLA tracking and shared mailbox collision detection?",
+    "brand_context": "HiverSupport",
+    "expected_intent": "POLICY_GENERAL_FAQ",
+    "expected_decision": "AUTOMATE",
+    "expected_routing_team": "Tier 1 Automated Fast-Path",
+    "rationale": "Standard product capabilities FAQ query."
+  },
+  {
+    "id": "GOLD_18",
+    "test_category": "standard",
+    "tweet": "@AmazonHelp Where can I download my VAT invoice for last month business expenses?",
+    "brand_context": "AmazonHelp",
+    "expected_intent": "BILLING_REFUND_INQUIRY",
+    "expected_decision": "AUTOMATE",
+    "expected_routing_team": "Tier 1 Automated Fast-Path",
+    "rationale": "VAT invoice self-serve retrieval request safely handled by standard automated portal guidance."
+  },
+  {
+    "id": "GOLD_19",
+    "test_category": "crisis_escalation",
+    "tweet": "@Delta Sitting on the tarmac for 5 hours without air conditioning or water! Inhumane emergency!",
+    "brand_context": "Delta",
+    "expected_intent": "COMPLAINT_FEEDBACK_ESCALATION",
+    "expected_decision": "ESCALATE_TO_HUMAN",
+    "expected_routing_team": "Senior Customer Experience Supervisor",
+    "rationale": "High-urgency flight operations crisis with passenger health risk."
+  },
+  {
+    "id": "GOLD_20",
+    "test_category": "standard",
+    "tweet": "@Uber_Support I received an SMS verification code that I never requested. Is someone hacking my account?",
+    "brand_context": "Uber_Support",
+    "expected_intent": "ACCOUNT_SECURITY_ACCESS",
+    "expected_decision": "ESCALATE_TO_HUMAN",
+    "expected_routing_team": "Account Security & Fraud Prevention",
+    "rationale": "Suspicious unauthorized 2FA attempt."
+  },
+  {
+    "id": "GOLD_21",
+    "test_category": "standard",
+    "tweet": "@AmazonHelp What carrier is delivering package #112-9901? Tracking number is not recognized.",
+    "brand_context": "AmazonHelp",
+    "expected_intent": "ORDER_DELIVERY_ISSUE",
+    "expected_decision": "AUTOMATE",
+    "expected_routing_team": "Tier 1 Automated Fast-Path",
+    "rationale": "Carrier identification query with self-serve tracking guidance."
+  },
+  {
+    "id": "GOLD_22",
+    "test_category": "standard",
+    "tweet": "@AppleSupport Can AppleCare+ warranty coverage be transferred to another person if I sell my Mac?",
+    "brand_context": "AppleSupport",
+    "expected_intent": "POLICY_GENERAL_FAQ",
+    "expected_decision": "AUTOMATE",
+    "expected_routing_team": "Tier 1 Automated Fast-Path",
+    "rationale": "Warranty transfer policy covered by standard support portal."
+  },
+  {
+    "id": "GOLD_23",
+    "test_category": "standard",
+    "tweet": "@AmazonHelp Getting error code 500 server error when clicking place order in Chrome browser.",
+    "brand_context": "AmazonHelp",
+    "expected_intent": "TECHNICAL_PRODUCT_SUPPORT",
+    "expected_decision": "AUTOMATE",
+    "expected_routing_team": "Tier 1 Automated Fast-Path",
+    "rationale": "Website checkout error with browser cache clearing guidance."
+  },
+  {
+    "id": "GOLD_24",
+    "test_category": "standard",
+    "tweet": "@Uber_Support The driver took an unnecessary detour and fare was $65 instead of $30 quote.",
+    "brand_context": "Uber_Support",
+    "expected_intent": "BILLING_REFUND_INQUIRY",
+    "expected_decision": "ESCALATE_TO_HUMAN",
+    "expected_routing_team": "Billing & Financial Operations",
+    "rationale": "Trip fare dispute requiring account review."
+  },
+  {
+    "id": "GOLD_25",
+    "test_category": "standard",
+    "tweet": "@AmazonHelp Do you ship internationally to Germany and calculate customs duties at checkout?",
+    "brand_context": "AmazonHelp",
+    "expected_intent": "POLICY_GENERAL_FAQ",
+    "expected_decision": "AUTOMATE",
+    "expected_routing_team": "Tier 1 Automated Fast-Path",
+    "rationale": "International shipping policy inquiry."
+  },
+  {
+    "id": "GOLD_26",
+    "test_category": "standard",
+    "tweet": "@NikeSupport I accidentally entered my old delivery address on order NIK-99214, please update it!",
+    "brand_context": "NikeSupport",
+    "expected_intent": "ORDER_DELIVERY_ISSUE",
+    "expected_decision": "AUTOMATE",
+    "expected_routing_team": "Tier 1 Automated Fast-Path",
+    "rationale": "Order address change with immediate DM dispatch guidance."
+  },
+  {
+    "id": "GOLD_27",
+    "test_category": "standard",
+    "tweet": "@Uber_Support Uber app is frozen on white blank screen on startup on Android 14.",
+    "brand_context": "Uber_Support",
+    "expected_intent": "TECHNICAL_PRODUCT_SUPPORT",
+    "expected_decision": "AUTOMATE",
+    "expected_routing_team": "Tier 1 Automated Fast-Path",
+    "rationale": "App freeze on launch with Google Play Services / reinstall troubleshooting SOP."
+  },
+  {
+    "id": "GOLD_28",
+    "test_category": "standard",
+    "tweet": "@SpotifyCares I cancelled my subscription last month but was charged $11.99 today. Help!",
+    "brand_context": "SpotifyCares",
+    "expected_intent": "BILLING_REFUND_INQUIRY",
+    "expected_decision": "ESCALATE_TO_HUMAN",
+    "expected_routing_team": "Billing & Financial Operations",
+    "rationale": "Recurring subscription billing dispute."
+  },
+  {
+    "id": "GOLD_29",
+    "test_category": "standard",
+    "tweet": "@AmazonHelp Tracking says delivered at front porch 10 mins ago but package is not there!",
+    "brand_context": "AmazonHelp",
+    "expected_intent": "ORDER_DELIVERY_ISSUE",
+    "expected_decision": "AUTOMATE",
+    "expected_routing_team": "Tier 1 Automated Fast-Path",
+    "rationale": "Premature delivery scan issue; guidance to check surroundings and wait before replacement."
+  },
+  {
+    "id": "GOLD_30",
+    "test_category": "pii_leak",
+    "tweet": "@Uber_Support Call me at +1 (555) 234-5678 immediately regarding my lost wallet!",
+    "brand_context": "Uber_Support",
+    "expected_intent": "ORDER_DELIVERY_ISSUE",
+    "expected_decision": "ESCALATE_TO_HUMAN",
+    "expected_routing_team": "Privacy & Data Protection Specialist",
+    "rationale": "Public phone number shared in tweet triggers PII protection gate."
+  },
+  {
+    "id": "GOLD_31",
+    "test_category": "standard",
+    "tweet": "@AmazonHelp I cannot access my order receipt or invoice on the customer portal.",
+    "brand_context": "AmazonHelp",
+    "expected_intent": "BILLING_REFUND_INQUIRY",
+    "expected_decision": "AUTOMATE",
+    "expected_routing_team": "Tier 1 Automated Fast-Path",
+    "rationale": "Standard invoice retrieval inquiry safely resolved via self-serve link."
+  },
+  {
+    "id": "GOLD_32",
+    "test_category": "standard",
+    "tweet": "@Delta Can I change my domestic flight date without paying change fees?",
+    "brand_context": "Delta",
+    "expected_intent": "POLICY_GENERAL_FAQ",
+    "expected_decision": "AUTOMATE",
+    "expected_routing_team": "Tier 1 Automated Fast-Path",
+    "rationale": "Factual change fee policy query directly answered by public airline rules."
+  },
+  {
+    "id": "GOLD_33",
+    "test_category": "standard",
+    "tweet": "@AppleSupport Where is the physical reset button on AirPods Pro charging case?",
+    "brand_context": "AppleSupport",
+    "expected_intent": "TECHNICAL_PRODUCT_SUPPORT",
+    "expected_decision": "AUTOMATE",
+    "expected_routing_team": "Tier 1 Automated Fast-Path",
+    "rationale": "Hardware troubleshooting query covered by standard setup documentation."
+  },
+  {
+    "id": "GOLD_34",
+    "test_category": "crisis_escalation",
+    "tweet": "@SpotifyCares I want to cancel my account immediately, worst customer service ever!",
+    "brand_context": "SpotifyCares",
+    "expected_intent": "COMPLAINT_FEEDBACK_ESCALATION",
+    "expected_decision": "ESCALATE_TO_HUMAN",
+    "expected_routing_team": "Senior Customer Experience Supervisor",
+    "rationale": "Customer expressing direct intent to churn with extreme dissatisfaction."
+  },
+  {
+    "id": "GOLD_35",
+    "test_category": "standard",
+    "tweet": "@AmazonHelp Can you send the courier back? They left my package on the sidewalk in the rain!",
+    "brand_context": "AmazonHelp",
+    "expected_intent": "ORDER_DELIVERY_ISSUE",
+    "expected_decision": "AUTOMATE",
+    "expected_routing_team": "Tier 1 Automated Fast-Path",
+    "rationale": "Mishandled delivery query with standard carrier check guidance."
+  },
+  {
+    "id": "GOLD_36",
+    "test_category": "pii_leak",
+    "tweet": "@AmazonHelp My email is sarah.connor@gmail.com and card is 4111-2222-3333-4444, please refund duplicate charge",
+    "brand_context": "AmazonHelp",
+    "expected_intent": "BILLING_REFUND_INQUIRY",
+    "expected_decision": "ESCALATE_TO_HUMAN",
+    "expected_routing_team": "Privacy & Data Protection Specialist",
+    "rationale": "Multiple sensitive PII tokens (card and email) posted publicly."
+  },
+  {
+    "id": "GOLD_37",
+    "test_category": "pii_leak",
+    "tweet": "@HiverSupport Call my mobile +1 (555) 987-6543 or email ceo@startup.io to fix this email sync error",
+    "brand_context": "HiverSupport",
+    "expected_intent": "TECHNICAL_PRODUCT_SUPPORT",
+    "expected_decision": "ESCALATE_TO_HUMAN",
+    "expected_routing_team": "Privacy & Data Protection Specialist",
+    "rationale": "Publicly exposed phone number and executive email."
+  },
+  {
+    "id": "GOLD_38",
+    "test_category": "standard",
+    "tweet": "@Uber_Support Uber charged me a $20 cleaning fee for a trip I never took! Fraudulent charge!",
+    "brand_context": "Uber_Support",
+    "expected_intent": "BILLING_REFUND_INQUIRY",
+    "expected_decision": "ESCALATE_TO_HUMAN",
+    "expected_routing_team": "Billing & Financial Operations",
+    "rationale": "Contested cleaning fee and fraud allegation."
+  },
+  {
+    "id": "GOLD_39",
+    "test_category": "standard",
+    "tweet": "@UberEats My delivered pizza was completely crushed and cold, need assistance with this order!",
+    "brand_context": "UberEats",
+    "expected_intent": "ORDER_DELIVERY_ISSUE",
+    "expected_decision": "AUTOMATE",
+    "expected_routing_team": "Tier 1 Automated Fast-Path",
+    "rationale": "Damaged food delivery inquiry handled via standard app support workflow."
+  },
+  {
+    "id": "GOLD_40",
+    "test_category": "standard",
+    "tweet": "@AmazonHelp Annual Prime subscription auto-renewed without notice, reverse the charge!",
+    "brand_context": "AmazonHelp",
+    "expected_intent": "BILLING_REFUND_INQUIRY",
+    "expected_decision": "ESCALATE_TO_HUMAN",
+    "expected_routing_team": "Billing & Financial Operations",
+    "rationale": "Subscription renewal dispute requiring account verification."
+  },
+  {
+    "id": "GOLD_41",
+    "test_category": "crisis_escalation",
+    "tweet": "@Delta Your gate agent screamed at my elderly mother! Filing formal complaint with DOT!",
+    "brand_context": "Delta",
+    "expected_intent": "COMPLAINT_FEEDBACK_ESCALATION",
+    "expected_decision": "ESCALATE_TO_HUMAN",
+    "expected_routing_team": "Senior Customer Experience Supervisor",
+    "rationale": "Staff misconduct allegation with federal DOT regulatory filing threat."
+  },
+  {
+    "id": "GOLD_42",
+    "test_category": "crisis_escalation",
+    "tweet": "@British_Airways 24 hours stranded at terminal with zero food or vouchers! Unacceptable disaster!",
+    "brand_context": "British_Airways",
+    "expected_intent": "COMPLAINT_FEEDBACK_ESCALATION",
+    "expected_decision": "ESCALATE_TO_HUMAN",
+    "expected_routing_team": "Senior Customer Experience Supervisor",
+    "rationale": "Severe stranded passenger crisis requiring duty manager escalation."
+  },
+  {
+    "id": "GOLD_43",
+    "test_category": "crisis_escalation",
+    "tweet": "@HiverSupport We are migrating our entire 200 user company away to competitors unless this bug is resolved today.",
+    "brand_context": "HiverSupport",
+    "expected_intent": "COMPLAINT_FEEDBACK_ESCALATION",
+    "expected_decision": "ESCALATE_TO_HUMAN",
+    "expected_routing_team": "Senior Customer Experience Supervisor",
+    "rationale": "High-value B2B enterprise churn threat."
+  },
+  {
+    "id": "GOLD_44",
+    "test_category": "standard",
+    "tweet": "@NikeSupport What are customer support operating hours on weekends and holidays?",
+    "brand_context": "NikeSupport",
+    "expected_intent": "POLICY_GENERAL_FAQ",
+    "expected_decision": "AUTOMATE",
+    "expected_routing_team": "Tier 1 Automated Fast-Path",
+    "rationale": "Standard business operating hours FAQ query."
+  },
+  {
+    "id": "GOLD_45",
+    "test_category": "standard",
+    "tweet": "@NikeSupport Does Nike offer student or teacher discounts online during back to school?",
+    "brand_context": "NikeSupport",
+    "expected_intent": "POLICY_GENERAL_FAQ",
+    "expected_decision": "AUTOMATE",
+    "expected_routing_team": "Tier 1 Automated Fast-Path",
+    "rationale": "Discount eligibility policy query."
+  },
+  {
+    "id": "GOLD_46",
+    "test_category": "standard",
+    "tweet": "@AppleSupport Can I pair AirPods Pro to both my iPhone and iPad simultaneously?",
+    "brand_context": "AppleSupport",
+    "expected_intent": "TECHNICAL_PRODUCT_SUPPORT",
+    "expected_decision": "AUTOMATE",
+    "expected_routing_team": "Tier 1 Automated Fast-Path",
+    "rationale": "Device configuration and multi-device pairing feature support query."
+  },
+  {
+    "id": "GOLD_47",
+    "test_category": "standard",
+    "tweet": "@SpotifyCares Desktop app keeps showing offline mode error even though my internet works.",
+    "brand_context": "SpotifyCares",
+    "expected_intent": "TECHNICAL_PRODUCT_SUPPORT",
+    "expected_decision": "AUTOMATE",
+    "expected_routing_team": "Tier 1 Automated Fast-Path",
+    "rationale": "Desktop offline error resolved by clean reinstall SOP."
+  },
+  {
+    "id": "GOLD_48",
+    "test_category": "standard",
+    "tweet": "@AmazonHelp Checkout button is grayed out and disabled on Chrome browser.",
+    "brand_context": "AmazonHelp",
+    "expected_intent": "TECHNICAL_PRODUCT_SUPPORT",
+    "expected_decision": "AUTOMATE",
+    "expected_routing_team": "Tier 1 Automated Fast-Path",
+    "rationale": "Website checkout technical glitch resolved by cache clearing."
+  },
+  {
+    "id": "GOLD_49",
+    "test_category": "standard",
+    "tweet": "@AppleSupport Received email saying my Apple ID password was changed from another country! Lock account!",
+    "brand_context": "AppleSupport",
+    "expected_intent": "ACCOUNT_SECURITY_ACCESS",
+    "expected_decision": "ESCALATE_TO_HUMAN",
+    "expected_routing_team": "Account Security & Fraud Prevention",
+    "rationale": "Suspected international account takeover requiring immediate account lock."
+  },
+  {
+    "id": "GOLD_50",
+    "test_category": "standard",
+    "tweet": "@SpotifyCares My 2FA authenticator app codes are expiring and I am locked out of my account.",
+    "brand_context": "SpotifyCares",
+    "expected_intent": "ACCOUNT_SECURITY_ACCESS",
+    "expected_decision": "ESCALATE_TO_HUMAN",
+    "expected_routing_team": "Account Security & Fraud Prevention",
+    "rationale": "Two-factor authentication lockout requiring identity verification."
+  }
+]
