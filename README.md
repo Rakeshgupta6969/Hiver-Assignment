@@ -1,239 +1,261 @@
 # Hiver AI Customer Support Agent (Twitter Intelligence Pipeline)
 
-Production-grade AI customer support agent designed for **Twitter (X)** customer support conversations, built for the **Hiver SDE Intern take-home assignment**.
-
-The system addresses three core customer service tasks:
-1. **Intent Classification**: Identifying issue categories from a 6-intent mutually exclusive, collectively exhaustive (MECE) taxonomy.
-2. **Response Generation**: Synthesizing helpful replies grounded in historical brand customer support interactions using Retrieval-Augmented Generation (RAG).
-3. **Automation Decision**: Evaluating risk, sentiment, complexity, and confidence to decide between autonomous self-serve reply (`AUTOMATE`) vs human routing (`ESCALATE_TO_HUMAN`) with transparent, audit-ready reasoning.
+An enterprise-grade, production-ready AI customer support agent designed for **Twitter (X)** customer support conversations, built for the **Hiver SDE Intern take-home assignment**.
 
 ---
 
-## Architecture Overview
+## 1. Project Overview
+
+Customer support on Twitter presents unique technical and operational challenges:
+- **Character Constraints & Signal-to-Noise**: Inbound tweets are under 280 characters, filled with typos, slang, handles, and fragmented context.
+- **Public Visibility & High Brand Stakes**: Every response is public; an AI hallucination or a robotic response to an angry user can trigger brand backlash.
+- **Privacy & PII Protection**: Public tweets must never expose sensitive customer data (card numbers, passwords, phone numbers). Customers must be redirected to secure Direct Messages (DMs).
+- **The Core Automation Trade-off**:
+  - *False Automation (Bot replies when human was needed)*: Drives customer churn, safety risks, and PR crises.
+  - *False Escalation (Escalates when bot was safe)*: Inflates human ticket volume and eliminates automation ROI.
+
+To solve this, the Hiver AI Customer Support Agent implements three core tasks:
+1. **Intent Classification**: Classifies customer queries into a 6-intent mutually exclusive, collectively exhaustive (MECE) taxonomy with confidence scores, sentiment levels, and urgency ratings.
+2. **Response Generation**: Generates brand-aligned replies strictly grounded in historical brand customer interactions via Retrieval-Augmented Generation (RAG) in ChromaDB, adhering to Twitter's 280-character limit.
+3. **Automation Decision**: A multi-factor risk gatekeeper that evaluates whether to resolve automatically (`AUTOMATE`) or route to a specialized human team (`ESCALATE_TO_HUMAN`) with transparent, audit-ready reasoning.
+
+---
+
+## 2. Architecture Diagram
 
 ```
                                ┌─────────────────────────────────────────┐
-                               │   Interactive Web Dashboard / Client    │
-                               │  (Live pipeline inspection & presets)   │
+                               │       Interactive Web Dashboard         │
+                               │   (Live pipeline trace & test presets)  │
                                └────────────────────┬────────────────────┘
                                                     │ HTTP / JSON
                                ┌────────────────────▼────────────────────┐
                                │          FastAPI Service Layer          │
-                               │    (/api/process, /api/batch, /health)  │
+                               │  (/api/process, /api/batch, /api/logs)  │
                                └────────────────────┬────────────────────┘
                                                     │
 ┌───────────────────────────────────────────────────▼───────────────────────────────────────────────────┐
 │                                       Modular AI Pipeline Engine                                      │
 │                                                                                                       │
-│   [1. Preprocessing & Sanitization]                                                                   │
-│        • Strips Twitter noise, extracts handles, masks accidental PII (cards, emails, phones)         │
+│   [1. Ingestion & Preprocessing]                                                                      │
+│        • Strips Twitter noise, extracts @handles, masks accidental PII (cards, emails, phones)        │
 │        ▼                                                                                              │
 │   [2. Intent Classification & Sentiment Engine]                                                       │
-│        • Predicts intent category, confidence, sentiment (4 levels), and urgency (4 levels)           │
+│        • Dual-mode classifier: LLM structured output + hybrid vector k-NN semantic classifier         │
+│        • Outputs: primary intent, confidence, sentiment (4 tiers), urgency (4 tiers), entities        │
 │        ▼                                                                                              │
 │   [3. Semantic Knowledge Retriever (ChromaDB RAG)]                                                    │
-│        • Vector search over historical customer-brand resolution pairs filtered by intent             │
+│        • Queries local ChromaDB vector store with ONNX all-MiniLM-L6-v2 embeddings                    │
+│        • Fetches top-K historical brand resolution pairs filtered by predicted intent                 │
 │        ▼                                                                                              │
 │   [4. Grounded Response Generator]                                                                    │
-│        • Drafts reply grounded strictly in historical brand precedents within Twitter 280-char limit  │
+│        • Synthesizes helpful reply strictly grounded in historical brand SOPs                         │
+│        • Enforces Twitter 280-char limit and suggests DM redirect for account verification            │
 │        ▼                                                                                              │
 │   [5. Automation & Escalation Gatekeeper]                                                             │
-│        • Multi-factor risk evaluation: AUTOMATE vs ESCALATE_TO_HUMAN with transparent audit reasoning │
+│        • Multi-factor risk engine: checks PII, crisis sentiment, high-risk intents, and confidence    │
+│        • Outputs: AUTOMATE vs ESCALATE_TO_HUMAN, safety score, assigned human team, and reasoning     │
+│        ▼                                                                                              │
+│   [6. Persistent Decision Audit Logger]                                                               │
+│        • Appends complete transaction record to logs/decision_audit.jsonl                             │
 └───────────────────────────────────────────────────┬───────────────────────────────────────────────────┘
                                                     │
                                ┌────────────────────▼────────────────────┐
                                │      Data & Knowledge Base Layer        │
                                │  • Twitter Support Inbound-Brand Pairs  │
-                               │  • Local In-Process ChromaDB Store      │
+                               │  • In-Process ChromaDB Vector Store     │
                                └─────────────────────────────────────────┘
 ```
 
 ---
 
-## 1. Intent Taxonomy (Task 1)
+## 3. Setup Instructions
 
-Customer support on Twitter requires a focused, actionable taxonomy rather than generic categories:
+### Prerequisites
+- Python 3.10 to 3.13
+- Git
 
-| Intent Category | Scope & Customer Need | Action / Resolution Pathway |
-| :--- | :--- | :--- |
-| `ORDER_DELIVERY_ISSUE` | Shipping delays, lost/damaged packages, delivery address updates, tracking links. | Provide self-serve tracking link or request order ID via DM. |
-| `BILLING_REFUND_INQUIRY` | Unexpected/duplicate charges, payment failures, refund timelines, invoices. | Direct to billing history or escalate to financial operations via DM. |
-| `TECHNICAL_PRODUCT_SUPPORT` | App crashes, checkout errors, login/authentication bugs, OS compatibility. | Provide troubleshooting SOP (cache, reboot, clean reinstall) or bug triage. |
-| `ACCOUNT_SECURITY_ACCESS` | Account lockouts, password resets, 2FA errors, compromised accounts. | High-priority security triage; guide to official identity recovery portal. |
-| `POLICY_GENERAL_FAQ` | Return/exchange windows, warranty coverage, baggage limits, business hours. | Instant self-serve answer with official help documentation citations. |
-| `COMPLAINT_FEEDBACK_ESCALATION` | Severe dissatisfaction, employee misconduct, legal/media threats, churn risk. | Immediate de-escalation; route directly to Senior CX Supervisor. |
+### Step-by-Step Installation
 
----
+1. **Clone or Navigate to the Workspace**:
+   ```bash
+   cd Hiver
+   ```
 
-## 2. Response Generation Grounded in Historical Brand Responses (Task 2)
+2. **Create and Activate a Virtual Environment**:
+   * Windows (PowerShell):
+     ```powershell
+     py -m venv venv
+     .\venv\Scripts\activate
+     ```
+   * Linux / macOS:
+     ```bash
+     python3 -m venv venv
+     source venv/bin/activate
+     ```
 
-A common failure mode in customer support bots is hallucination (promising unauthorized refunds, inventing non-existent features, or robotic dismissals).
-
-- **Grounding Mechanism**: The system indexes historical Twitter support conversations across major customer service accounts (`AmazonHelp`, `AppleSupport`, `Uber_Support`, `Delta`, `SpotifyCares`, `NikeSupport`).
-- **Semantic Retrieval**: For every inbound tweet, ChromaDB retrieves top-$K$ ($K=3$) semantically matching resolution exemplars matching the classified intent.
-- **Constraints Enforced**:
-  - Max 280 characters (hard Twitter boundary).
-  - Emulates brand tone (empathetic, professional, solution-oriented).
-  - Explicit Direct Message (DM) redirect when private account verification is required.
-
----
-
-## 3. Automation Decision & Escalation Gatekeeper (Task 3)
-
-The automation gatekeeper operates as a **conservative, high-precision risk filter**:
-
-```
-                         [Inbound Tweet & Draft Response]
-                                        │
-                      Critical Distress or Legal Threat?
-                                     /     \
-                                  (Yes)    (No)
-                                   /         \
-                      ESCALATE_TO_HUMAN    Intent is Account Security / Dispute?
-                                                  /     \
-                                               (Yes)    (No)
-                                                /         \
-                                   ESCALATE_TO_HUMAN    Confidence >= 0.75 & Similarity >= 0.45?
-                                                               /     \
-                                                            (Yes)    (No)
-                                                             /         \
-                                                         AUTOMATE    ESCALATE_TO_HUMAN
-```
-
-### Transparent Decision Schema:
-```json
-{
-  "decision": "AUTOMATE",
-  "confidence": 0.95,
-  "routing_team": "Tier 1 Automated Fast-Path",
-  "reasoning": "Safe for instant automation. High intent confidence (0.96) with strong historical grounding precedent (similarity: 0.77). Customer sentiment is NEUTRAL with no detected security, PII, or high-risk escalation flags.",
-  "urgency": "LOW",
-  "risk_factors": []
-}
-```
+3. **Install Dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+   *Dependencies include: `fastapi`, `uvicorn[standard]`, `pydantic`, `chromadb`, `google-genai`, `python-dotenv`, `httpx`, `pytest`.*
 
 ---
 
-## Project Structure
+## 4. Environment Variables
 
-```
-.
-├── api/
-│   └── main.py                     # FastAPI server (/api/process, /api/batch, /api/logs)
-├── data/
-│   ├── twitter_support_conversations.json # Representative customer-brand dataset
-│   ├── golden_evaluation_set.json  # 30-case annotated golden benchmark dataset
-│   └── chroma_db/                  # Persistent local ChromaDB vector store
-├── logs/
-│   └── decision_audit.jsonl        # Append-only structured decision audit log
-├── src/
-│   ├── config.py                   # App configuration & environment variables
-│   ├── models.py                   # Strict Pydantic models & MECE taxonomy enums
-│   ├── preprocessor.py             # Twitter text cleaning & PII masking
-│   ├── intent_classifier.py        # Intent classification engine (LLM + local fallback)
-│   ├── knowledge_retriever.py      # ChromaDB vector retrieval of historical exemplars
-│   ├── response_generator.py       # Grounded response generator
-│   ├── automation_gatekeeper.py    # Multi-factor escalation decision engine
-│   ├── decision_logger.py          # Structured audit logging engine
-│   └── pipeline.py                 # End-to-end SupportAgent pipeline orchestrator
-├── static/
-│   ├── index.html                  # Interactive Dashboard UI
-│   ├── style.css                   # Modern dark-mode glassmorphic styling
-│   └── app.js                      # Live pipeline visualization & presets
-├── tests/
-│   ├── test_api.py                 # FastAPI endpoint integration tests
-│   ├── test_automation_gatekeeper.py # Gatekeeper & safety tests
-│   ├── test_generator.py           # Grounding & Twitter length tests
-│   ├── test_intent_classifier.py   # Intent classification unit tests
-│   ├── test_preprocessor.py        # PII masking & normalization tests
-│   └── test_retriever.py           # ChromaDB retrieval tests
-├── evaluate.py                     # 30-case golden benchmark & report generator
-├── EVALUATION_REPORT.md            # Formal evaluation report with confusion matrix
-├── run.py                          # Server launcher
-├── requirements.txt                # Python package dependencies
-└── README.md
-```
+The system operates in **dual mode**: it connects to a live Google Gemini LLM when an API key is provided, or seamlessly utilizes the local deterministic semantic engine (default) for zero-latency, offline execution.
 
----
-
-## Deliverables Summary for Hiver Assignment
-
-| Deliverable | Location | Description |
-| :--- | :--- | :--- |
-| **Golden Evaluation Set** | [`data/golden_evaluation_set.json`](file:///c:/Users/rg688/OneDrive/Desktop/Hiver/data/golden_evaluation_set.json) | 30 diverse real-world customer tweets with ground-truth intents, expected decisions, routing teams, and rationale. |
-| **Decision Audit Log** | [`logs/decision_audit.jsonl`](file:///c:/Users/rg688/OneDrive/Desktop/Hiver/logs/decision_audit.jsonl) | Append-only audit trail logging every triage decision, confidence score, and rationale. Accessible via `GET /api/logs`. |
-| **Formal Evaluation Report** | [`EVALUATION_REPORT.md`](file:///c:/Users/rg688/OneDrive/Desktop/Hiver/EVALUATION_REPORT.md) | Comprehensive quantitative evaluation with per-intent Precision/Recall/F1, confusion matrix, and safety metrics. |
-| **Complete Source & Tests** | [`src/`](file:///c:/Users/rg688/OneDrive/Desktop/Hiver/src/), [`tests/`](file:///c:/Users/rg688/OneDrive/Desktop/Hiver/tests/) | Full modular pipeline with 25 passing automated unit & integration tests. |
-
----
-
-## Getting Started
-
-### 1. Setup Virtual Environment
+Create a `.env` file in the project root (or copy `.env.example`):
 ```bash
-# Clone or navigate to the workspace
-cd Hiver
-
-# Create and activate virtual environment
-py -m venv venv
-.\venv\Scripts\activate
+cp .env.example .env
 ```
-
-### 2. Install Dependencies
-```bash
-pip install -r requirements.txt
-```
-
-### 3. Environment Variables Reference
 
 | Variable | Default Value | Description |
 | :--- | :--- | :--- |
 | `GEMINI_API_KEY` | *(empty)* | Google Gemini API key. When omitted, system automatically uses the local deterministic semantic engine. |
 | `GOOGLE_API_KEY` | *(empty)* | Alternative alias for Google Gemini API key. |
-| `GEMINI_MODEL_NAME` | `gemini-2.5-flash` | Gemini model variant used for generation and classification. |
+| `GEMINI_MODEL_NAME` | `gemini-2.5-flash` | Gemini model variant used for LLM generation and classification. |
 | `FORCE_LOCAL_FALLBACK` | `false` | When set to `true`, forces local deterministic semantic mode even if an API key is present. |
-
-### 4. Run Automated Test Suite
-```bash
-pytest -v
-```
-*Expected: 25 passing tests covering all components.*
-
-### 5. Run Golden Benchmark Evaluation
-```bash
-python evaluate.py
-```
-*Evaluates the 50-case golden test set, outputs metrics, and generates `EVALUATION_REPORT.md`.*
-
-### 6. Launch Interactive Web Dashboard
-```bash
-python run.py
-```
-Open **http://127.0.0.1:8000** in your browser.
-Interactive features:
-- Test preset chips (Delayed Package, Duplicate Charge, App Crash, Account Compromised, FAQ, Legal Escalation, Public PII Leak).
-- Step-by-step visual breakdown of the 3 tasks.
-- Grounding precedent accordion showing historical brand resolution matches.
-- OpenAPI Swagger documentation at **http://127.0.0.1:8000/docs**.
-- Audit log endpoint at **http://127.0.0.1:8000/api/logs**.
 
 ---
 
-## Dataset Information & Scaling to Full Twitter Support Data
+## 5. Dataset Preparation & Scaling
 
-### Demo Seed Subset vs Full Kaggle Dataset
-- **The Challenge**: The complete Kaggle *Customer Support on Twitter* (`twcs.csv`) dataset contains **~2.81 million tweets (~700 MB)**. Ingesting, embedding, and committing 3 million interactions into a Git repository is impractical (exceeds GitHub file limits) and requires hours of GPU compute.
-- **Selection of 28-Pair Seed Subset**: We selected 28 authentic first-turn customer queries paired with official brand first-response resolutions across 7 premier customer support handles (`@AmazonHelp`, `@AppleSupport`, `@Uber_Support`, `@Delta`, `@SpotifyCares`, `@NikeSupport`, `@HiverSupport`).
-- **Why It Is Sufficient**: Provides dense, balanced semantic coverage across all 6 intents and major customer support verticals (e-commerce, hardware, fintech/ride-hailing, travel, media streaming, and B2B SaaS).
-- **Scaling with `ingest_twcs_csv.py`**:
-  If you have the full Kaggle `twcs.csv` file, ingest any arbitrary number of conversation pairs into ChromaDB using the included CLI tool:
+### Demo Seed Subset vs. Full Kaggle Dataset
+- **The Challenge**: The canonical Kaggle *Customer Support on Twitter* (`twcs.csv`) dataset contains **~2.81 million tweets (~700 MB)**. Bundling a 700 MB CSV in a Git repository exceeds GitHub limits and requires hours of GPU compute to vectorize.
+- **Demo Seed Subset (`data/twitter_support_conversations.json`)**:
+  - Contains 28 representative customer-brand conversation pairs modeled directly on `twcs.csv`.
+  - Balanced across 7 leading support accounts: `@AmazonHelp`, `@AppleSupport`, `@Uber_Support`, `@Delta`, `@SpotifyCares`, `@NikeSupport`, `@HiverSupport`.
+  - Captures genuine resolution policies: carrier tracking portals (`amzn.to/dm`), Apple recovery portals (`iforgot.apple.com`), baggage emergency procedures, and clean reinstalls.
+- **Why It Is Sufficient**:
+  - Provides dense semantic coverage across all 6 intents.
+  - ChromaDB indexes this in-process on startup in milliseconds with zero GPU/network dependencies.
+- **Scaling to Full Kaggle Dataset (`data/ingest_twcs_csv.py`)**:
+  To index arbitrary thousands or millions of interactions from Kaggle:
   ```bash
   python data/ingest_twcs_csv.py --csv /path/to/twcs.csv --max-pairs 5000
   ```
 
 ---
 
-## Golden Benchmark Results
+## 6. Running Instructions
+
+### 1. Launch Interactive Web Dashboard & API Server
+```powershell
+python run.py
+```
+* Or directly via virtual environment executable:
+```powershell
+.\venv\Scripts\python.exe run.py
+```
+- Open **[http://127.0.0.1:8000](http://127.0.0.1:8000)** in your browser to interact with the dashboard.
+- Open **[http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)** for interactive OpenAPI (Swagger) documentation.
+
+### 2. Run the 50-Case Golden Benchmark Evaluation
+```powershell
+python evaluate.py
+```
+- Runs end-to-end evaluation against `data/golden_evaluation_set.json`.
+- Outputs intent accuracy, gate accuracy, false automations, and latency metrics.
+- Automatically generates [EVALUATION_REPORT.md](file:///c:/Users/rg688/OneDrive/Desktop/Hiver/EVALUATION_REPORT.md).
+
+### 3. Run Automated Unit & Integration Tests
+```powershell
+pytest -v
+```
+- Runs all 25 automated tests across 6 test modules covering preprocessing, classification, RAG retrieval, response generation, gatekeeper safety, and FastAPI REST endpoints.
+
+---
+
+## 7. API Documentation
+
+The FastAPI backend exposes typed REST endpoints documented below:
+
+### `POST /api/process`
+Processes a single customer tweet through the full 5-stage pipeline.
+
+**Request Body (`application/json`):**
+```json
+{
+  "tweet_text": "@AmazonHelp My package was supposed to arrive yesterday! Where is order #402-8921821?",
+  "brand_context": "AmazonHelp",
+  "author_id": "customer_user"
+}
+```
+
+**Response Body (`200 OK`):**
+```json
+{
+  "inbound_tweet": "@AmazonHelp My package was supposed to arrive yesterday! Where is order #402-8921821?",
+  "preprocessed": {
+    "raw_text": "@AmazonHelp My package was supposed to arrive yesterday! Where is order #402-8921821?",
+    "cleaned_text": "@AmazonHelp My package was supposed to arrive yesterday! Where is order #402-8921821?",
+    "handles_detected": ["@AmazonHelp"],
+    "contains_masked_pii": false,
+    "original_length": 86,
+    "cleaned_length": 86
+  },
+  "intent_classification": {
+    "primary_intent": "ORDER_DELIVERY_ISSUE",
+    "confidence": 0.85,
+    "secondary_intent": null,
+    "sentiment": "NEGATIVE",
+    "urgency": "MEDIUM",
+    "reasoning": "Classified as ORDER_DELIVERY_ISSUE based on contextual cues and matched support terms.",
+    "extracted_entities": {
+      "order_identifier": "402-8921821"
+    }
+  },
+  "grounded_response": {
+    "generated_reply": "We're sorry for the delay with your delivery! Please send us a DM with your order number and full delivery address so we can check the carrier status immediately: amzn.to/dm",
+    "grounded_in_exemplars": [
+      {
+        "id": "TW_ORD_001",
+        "brand": "AmazonHelp",
+        "customer_query": "@AmazonHelp My package was supposed to arrive yesterday by 8 PM...",
+        "brand_response": "We're sorry for the delay with your delivery! Please send us a DM...",
+        "intent": "ORDER_DELIVERY_ISSUE",
+        "similarity_score": 0.8505
+      }
+    ],
+    "character_count": 173,
+    "direct_message_suggested": true,
+    "tone": "Grounded & Authoritative"
+  },
+  "automation_decision": {
+    "decision": "AUTOMATE",
+    "confidence": 0.85,
+    "reasoning": "Safe for instant automation. High intent confidence (0.85) with strong historical grounding precedent (similarity: 0.85). Customer sentiment is NEGATIVE with no detected security, PII, or high-risk escalation flags.",
+    "urgency": "MEDIUM",
+    "routing_team": "Tier 1 Automated Fast-Path",
+    "risk_factors": []
+  },
+  "execution_time_ms": 342.1
+}
+```
+
+### `POST /api/batch`
+Processes multiple tweets in a batch request.
+- **Request**: List of `SupportAgentRequest` objects.
+- **Response**: List of `SupportAgentResponse` objects.
+
+### `GET /api/logs`
+Returns the recent decision audit log records from `logs/decision_audit.jsonl`.
+- **Query Parameters**: `limit` (default: 50).
+- **Response**: Array of structured audit log objects.
+
+### `GET /api/intents`
+Returns the 6-intent taxonomy definitions and descriptions.
+
+### `GET /api/health`
+Returns system health, total indexed exemplars in ChromaDB, and active engine mode.
+
+---
+
+## 8. Evaluation Results
+
+The agent was benchmarked on the **50-case Golden Evaluation Set** (`data/golden_evaluation_set.json`):
 
 ```
 =====================================================================================
@@ -243,27 +265,48 @@ Interactive features:
 • Overall Intent Accuracy:           88.0% (44/50)
 • Overall Automation Gate Accuracy:  94.0% (47/50)
 • High-Risk False Automations:       0 (0.0%) [TARGET: 0 - 100% Safety Compliance]
-• Average End-to-End Latency:        537.36 ms
+• Mean End-to-End Latency:           537.36 ms
 • P50 / P95 Latency:                 525.91 ms / 642.62 ms
 =====================================================================================
 ```
-Full quantitative breakdown, confusion matrix, and safety analysis are available in [EVALUATION_REPORT.md](file:///c:/Users/rg688/OneDrive/Desktop/Hiver/EVALUATION_REPORT.md).
+
+### Per-Intent Performance Metrics
+
+| Intent Category | Support | Precision | Recall | F1-Score |
+| :--- | :---: | :---: | :---: | :---: |
+| `ORDER_DELIVERY_ISSUE` | 8 | 87.5% | 87.5% | **87.5%** |
+| `BILLING_REFUND_INQUIRY` | 11 | 91.7% | 100.0% | **95.7%** |
+| `TECHNICAL_PRODUCT_SUPPORT` | 10 | 100.0% | 80.0% | **88.9%** |
+| `ACCOUNT_SECURITY_ACCESS` | 5 | 62.5% | 100.0% | **76.9%** |
+| `POLICY_GENERAL_FAQ` | 8 | 85.7% | 75.0% | **80.0%** |
+| `COMPLAINT_FEEDBACK_ESCALATION` | 8 | 100.0% | 87.5% | **93.3%** |
+
+Full confusion matrix and case-by-case analysis are documented in [evaluation_report.md](file:///c:/Users/rg688/OneDrive/Desktop/Hiver/evaluation_report.md).
 
 ---
 
-## System Limitations
+## 9. System Limitations
 
-1. **Single-Turn Triage**: Currently focuses on the crucial first turn of an inbound customer tweet. Multi-turn dialogue thread reconciliation is handled through DM redirects rather than persistent thread states.
+1. **Single-Turn Triage**: Currently focuses on the crucial first turn of an inbound customer tweet. Multi-turn dialogue thread reconciliation is handled through DM redirects rather than persistent conversation states.
 2. **Public Twitter Constraints**: To adhere to strict consumer privacy laws, public replies cannot execute account-level actions (e.g., executing a refund directly in a tweet). The system safely routes customers to secure DMs.
 3. **Language Scope**: Currently optimized for English customer support interactions.
 
 ---
 
-## Future Improvements
+## 10. Future Improvements
 
 1. **Multi-Turn Thread Context**: Ingesting Twitter conversation tree hierarchies to maintain context across multi-turn exchanges.
 2. **Direct CRM Integration**: Integrating directly into Hiver's shared mailbox and ticket routing APIs to automatically create tagged tickets in Gmail.
 3. **Active Learning from Agent Edits**: Continuously re-indexing human agent edits to improve retrieval grounding over time.
 4. **Multi-Lingual Embeddings**: Upgrading to multilingual vector models (e.g., `paraphrase-multilingual-MiniLM-L12-v2`) for global cross-language support.
 
+---
 
+## Key Deliverables Summary
+
+* **Project Overview & Architecture**: [README.md](file:///c:/Users/rg688/OneDrive/Desktop/Hiver/README.md)
+* **Architecture Decision Records & Triage Policies**: [decision_log.md](file:///c:/Users/rg688/OneDrive/Desktop/Hiver/decision_log.md)
+* **Formal Evaluation Report & Confusion Matrix**: [evaluation_report.md](file:///c:/Users/rg688/OneDrive/Desktop/Hiver/evaluation_report.md)
+* **50-Case Golden Evaluation Set**: [data/golden_evaluation_set.json](file:///c:/Users/rg688/OneDrive/Desktop/Hiver/data/golden_evaluation_set.json)
+* **Decision Audit Log (Append-only)**: [logs/decision_audit.jsonl](file:///c:/Users/rg688/OneDrive/Desktop/Hiver/logs/decision_audit.jsonl)
+* **Kaggle Dataset Scaling Tool**: [data/ingest_twcs_csv.py](file:///c:/Users/rg688/OneDrive/Desktop/Hiver/data/ingest_twcs_csv.py)
